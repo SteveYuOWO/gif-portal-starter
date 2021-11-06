@@ -1,6 +1,6 @@
 .App {
   height: 100vh;
-  background-color: #1a202c;
+  background-color: #ff9970;
   overflow: scroll;
   text-align: center;
 }
@@ -27,8 +27,16 @@
   color: white;
 }
 
+.sub-header {
+  margin: 20px 0 0;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+}
+
 .sub-text {
-  font-size: 25px;
+  font-size: 20px;
+  font-weight: 600;
   color: white;
 }
 
