@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import twitterLogo from './assets/twitter-logo.svg';
 import './App.css';
-import { checkIfWalletIsConnected, connectWallet, createGifAccount, getGifList } from './util';
+import { checkIfWalletIsConnected, connectWallet, createGifAccount, getGifList, sendGif } from './util';
 import { TEST_GIFS } from './consts';
 
 // Constants
@@ -33,14 +33,6 @@ const App = () => {
     }
   }, [walletAddress]);
 
-  const sendGif = async () => {
-    if (inputValue.length > 0) {
-      console.log('Gif link:', inputValue);
-    } else {
-      console.log('Empty input. Try again.');
-    }
-  };
-
   const onInputChange = (event) => {
     const { value } = event.target;
     setInputValue(value);
@@ -67,7 +59,7 @@ const App = () => {
             value={inputValue}
             onChange={onInputChange}
           />
-          <button className="cta-button submit-gif-button" onClick={sendGif}>
+          <button className="cta-button submit-gif-button" onClick={() => sendGif(inputValue, setGifList)}>
             Submit
           </button>
           <div className="gif-grid">
