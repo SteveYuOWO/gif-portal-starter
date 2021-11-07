@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import twitterLogo from './assets/twitter-logo.svg';
 import './App.css';
-import { checkIfWalletIsConnected, connectWallet } from './util';
+import { checkIfWalletIsConnected, connectWallet, createGifAccount, getGifList } from './util';
 import { TEST_GIFS } from './consts';
 
 // Constants
@@ -23,6 +23,12 @@ const App = () => {
   useEffect(() => {
     if (walletAddress) {
       console.log('Fetching GIF list...');
+
+      try {
+        getGifList(setGifList)
+      } catch (error) {
+
+      }
       setGifList(TEST_GIFS);
     }
   }, [walletAddress]);
@@ -38,6 +44,43 @@ const App = () => {
   const onInputChange = (event) => {
     const { value } = event.target;
     setInputValue(value);
+  }
+
+  const renderConnectedContainer = () => {
+    // If we hit this, it means the program account hasn't be initialized.
+    if (gifList === null) {
+      return (
+        <div className="connected-container">
+          <button className="cta-button submit-gif-button" onClick={() => createGifAccount(setGifList)}>
+            Do One-Time Initialization For GIF Program Account
+          </button>
+        </div>
+      )
+    }
+    // Otherwise, we're good! Account exists. User can submit GIFs.
+    else {
+      return (
+        <div className="connected-container">
+          <input
+            type="text"
+            placeholder="Enter gif link!"
+            value={inputValue}
+            onChange={onInputChange}
+          />
+          <button className="cta-button submit-gif-button" onClick={sendGif}>
+            Submit
+          </button>
+          <div className="gif-grid">
+            {/* We use index as the key instead, also, the src is now item.gifLink */}
+            {gifList.map((item, index) => (
+              <div className="gif-item" key={index}>
+                <img src={item.gifLink} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
   }
 
   return (
@@ -56,21 +99,7 @@ const App = () => {
             >
               Connect to Wallet
             </button> :
-              <div className="connected-container">
-                {/* Go ahead and add this input and button to start */}
-                <input type="text"
-                  placeholder="Enter gif link!"
-                  value={inputValue}
-                  onChange={onInputChange} />
-                <button className="cta-button submit-gif-button" onClick={sendGif}>Submit</button>
-                <div className="gif-grid">
-                  {gifList.map(gif => (
-                    <div className="gif-item" key={gif}>
-                      <img src={gif} alt={gif} />
-                    </div>
-                  ))}
-                </div>
-              </div>
+              renderConnectedContainer()
           }
         </div>
         <div className="footer-container">
